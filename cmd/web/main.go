@@ -39,6 +39,8 @@ func main() {
 
 	handlers.DBAccess(db)
 
+	defer db.Close()
+
 	// run the routes
 	srv := &http.Server{
 		Addr:    portNumber,

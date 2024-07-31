@@ -11,6 +11,7 @@
     
     </head>
     <body>
+        {{$consumption := index .Data "countryConsumption"}}
         <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#" style="margin-left: 15px;"><span style="color: green;"><i class="fa-brands fa-pagelines"></i></span> EcoInstall</a>
@@ -54,13 +55,40 @@
         <br>
         <br>
 
-        <form action="" method="post" class="text-center">
+        <form method="post" class="text-center">
             <h2>Get Data On Resource Production of a Country</h2>
             <br>
             <label for="country" style="margin-bottom: 3%;">Enter desired country: </label>
             <br>
-            <input type="text" name="country" id="country" placeholder="Enter a country" class="form-control" style="margin-bottom: 3%;">
-            <button class="btn btn-primary">Submit</button>            
+            <input type="text" name="country" id="country" placeholder="Enter a country" class="form-control" style="margin-bottom: 3%;" value="{{if index .Data "countryConsumption"}} {{$consumption.Country}} {{end}}">
+            <button class="btn btn-primary">Submit</button>
+            <br>
+            {{if index .Errors "consumptionCountryNotFound"}}
+                <br>
+                <label class="text-danger">{{index .Errors "consumptionCountryNotFound"}}</label>
+            {{end}}
+            {{if index .Data "countryConsumption"}}
+                <br>
+                <table class="table table-striped table-dark">
+                    <tr>
+                        <td>Country</td>
+                        <td>Oil Produced (TWh)</td>
+                        <td>Electricity Produced (TWh)</td>
+                        <td>Coal Produced (TWh)</td>
+                        <td>Natural Gas Produced (TWh)</td>
+                        <td>Biofuel Produced (TWh)</td>
+                    </tr>
+
+                    <tr>
+                        <td>{{$consumption.Country}}</td>
+                        <td>{{$consumption.Oil}}</td>
+                        <td>{{$consumption.Electricity}}</td>
+                        <td>{{$consumption.Coal}}</td>
+                        <td>{{$consumption.NaturalGas}}</td>
+                        <td>{{$consumption.Biofuel}}</td>
+                    </tr>
+                </table>
+            {{end}}
         </form>
 
         <div class="footer" style="margin-top: 5%;">
