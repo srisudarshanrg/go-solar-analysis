@@ -11,7 +11,8 @@
     
     </head>
     <body>
-       <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
+        {{$production := index .Data "countryProduction"}}
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#" style="margin-left: 15px;"><span style="color: green;"><i class="fa-brands fa-pagelines"></i></span> EcoInstall</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,16 +62,46 @@
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 fields">
                     <label for="country" style="margin-bottom: 3%;">Enter desired country: </label>
                     <br>
-                    <input type="text" name="country" id="country" placeholder="Enter a country" class="form-control">
+                    <input type="text" name="country" id="country" placeholder="Enter a country" class="form-control" value="{{if index .Data "countryProduction"}} {{$production.Country}} {{end}}">
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 fields">
                     <label for="year" style="margin-bottom: 3%;">Enter desired year: </label>
                     <br>
-                    <input type="text" name="year" id="year" placeholder="Enter desired year" class="form-control">
+                    <input type="text" name="year" id="year" placeholder="Enter desired year" class="form-control" value="{{if index .Data "countryProduction"}} {{$production.Year}} {{end}}">
                 </div>
             </div>
             <br>
-            <button class="btn btn-primary">Submit</button>            
+            <button class="btn btn-primary">Submit</button>
+
+            {{if index .Errors "productionCountryNotFound"}}
+                <br>
+                <br>
+                <label class="text-danger">{{index .Errors "productionCountryNotFound"}}</label>
+            {{end}}    
+            
+            {{if index .Data "countryProduction"}}
+                <br>
+                <br>
+                <table class="table table-striped table-dark">
+                    <tr>
+                        <td>Country</td>
+                        <td>Code</td>
+                        <td>Year</td>
+                        <td>Gas Production (TWh)</td>
+                        <td>Coal Production (TWh)</td>
+                        <td>Oil Production (TWh)</td>
+                    </tr>
+
+                    <tr>
+                        <td>{{$production.Country}}</td>
+                        <td>{{$production.Code}}</td>
+                        <td>{{$production.Year}}</td>
+                        <td>{{$production.GasProduction}}</td>
+                        <td>{{$production.CoalProduction}}</td>
+                        <td>{{$production.OilProduction}}</td>
+                    </tr>
+                </table>
+            {{end}}
         </form>
 
         <div class="footer">

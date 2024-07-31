@@ -121,7 +121,79 @@ func (a *HandlerAccess) ResourceProduction(w http.ResponseWriter, r *http.Reques
 }
 
 func (a *HandlerAccess) PostResourceProduction(w http.ResponseWriter, r *http.Request) {
+	var err error
+	err = r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
 
+	countryEntered := r.Form.Get("country")
+	countryEntered = strings.ToLower(countryEntered)
+
+	yearEntered := r.Form.Get("year")
+
+	getCountryQuery := `select * from resource_production where lower(country)=$1 and year=$2`
+	result, err := db.Exec(getCountryQuery, countryEntered, yearEntered)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	rowNumber, _ := result.RowsAffected()
+	if rowNumber == 0 {
+		errorMap := map[string]string{}
+		errorMap["productionCountryNotFound"] = "Data not available for this country or year"
+
+		render.RenderTemplate(w, r, "resource-production.page.tmpl", &models.TemplateData{
+			Errors: errorMap,
+		})
+
+		return
+	}
+
+	rows, err := db.Query(getCountryQuery, countryEntered, yearEntered)
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer rows.Close()
+
+	var country, code, year, gas_production, coal_production, oil_production string
+	var id int
+	var created, updated interface{}
+
+	for rows.Next() {
+		err = rows.Scan(&id, &country, &code, &year, &gas_production, &coal_production, &oil_production, &created, &updated)
+
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	type ProductionDetails struct {
+		Country        string
+		Code           string
+		Year           string
+		GasProduction  string
+		CoalProduction string
+		OilProduction  string
+	}
+
+	countryProduction := ProductionDetails{
+		Country:        country,
+		Code:           code,
+		Year:           year,
+		GasProduction:  gas_production,
+		CoalProduction: coal_production,
+		OilProduction:  oil_production,
+	}
+
+	data := map[string]interface{}{}
+	data["countryProduction"] = countryProduction
+
+	render.RenderTemplate(w, r, "resource-production.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }
 
 func (a *HandlerAccess) SolarAnalysis(w http.ResponseWriter, r *http.Request) {
