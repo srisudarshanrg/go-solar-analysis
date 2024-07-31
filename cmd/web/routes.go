@@ -4,11 +4,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/srisudarshanrg/idp-project/pkg/config"
 	"github.com/srisudarshanrg/idp-project/pkg/handlers"
 )
 
-func routes(app *config.AppConfig) http.Handler {
+func routes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Get("/", handlers.Repository.Home)
