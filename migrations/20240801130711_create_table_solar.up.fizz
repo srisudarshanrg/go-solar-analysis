@@ -8,4 +8,5 @@ create_table("solar") {
     t.Column("batteries", "string")
     t.Column("accessories", "string")
     t.Column("electricity_annual", "string")
+    t.Column("company", "string")
 }
