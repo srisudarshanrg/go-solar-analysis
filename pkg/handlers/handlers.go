@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -231,9 +230,7 @@ func (a *HandlerAccess) PostSolar(w http.ResponseWriter, r *http.Request) {
 	var plan, power, modules, batteries, accessories, electricity, company, link string
 	var id, land_area_minimum, land_area_maximum int
 
-	heading := "<h1 style='color: #fff; padding: 2%;'>Available Plans</h1>"
-
-	_, _ = fmt.Fprint(w, heading)
+	var planList []interface{}
 
 	for rows.Next() {
 		err = rows.Scan(&id, &plan, &land_area_minimum, &land_area_maximum, &power, &modules, &batteries, &accessories, &electricity, &company, &link)
@@ -244,55 +241,16 @@ func (a *HandlerAccess) PostSolar(w http.ResponseWriter, r *http.Request) {
 		land_area_minimum := strconv.Itoa(land_area_minimum)
 		land_area_maximum := strconv.Itoa(land_area_maximum)
 
-		html := `
-		    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-			<body style="background-color: rgb(20,20, 20); color:#fff;">
-				<table class="table table-striped table-dark">
-					<tr>
-						<td>Plan Name</td>
-						<td>Company</td>
-						<td>Minimum Area (sqft)</td>
-						<td>Maximum Area (sqft)</td>
-						<td>Power</td>
-						<td>Modules</td>
-						<td>Batteries</td>
-						<td>Accessories</td>
-						<td>Annual Electricity</td>
-						<td>Link</td>
-					</tr>
-
-					<tr>
-						<td>%s</td>
-						<td>%s</td>
-						<td>%s</td>
-						<td>%s</td>
-						<td>%s</td>
-						<td>%s</td>
-						<td>%s</td>
-						<td>%s</td>
-						<td>%s</td>
-						<td><a href="%s">Visit Link</a></td>
-					</tr>
-				</table>
-			</body>
-		`
-
-		_, err := fmt.Fprintf(w, html, plan, company, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, electricity, link)
-		if err != nil {
-			log.Println(err)
-		}
+		planList = append(planList, plan, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, electricity, company, link)
 	}
 
-	linkBack := `
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-		<br>
-		<a href='/solar' style='margin-left: 2%;' class='btn btn-primary'><i class="fa-solid fa-arrow-left"></i></a>
+	data := map[string]interface{}{}
+	data["solarOutput"] = planList
 
-		<script src="https://kit.fontawesome.com/2ce79bf423.js" crossorigin="anonymous"></script>
-	`
+	render.RenderTemplate(w, r, "solar-output.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 
-	_, _ = fmt.Fprint(w, linkBack)
-	w.Header().Add("Content-Type", "text/html")
 }
 
 func (a *HandlerAccess) Wind(w http.ResponseWriter, r *http.Request) {
