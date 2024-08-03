@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strconv"
 	"strings"
 
 	"github.com/srisudarshanrg/idp-project/pkg/config"
@@ -199,7 +198,6 @@ func (a *HandlerAccess) PostResourceProduction(w http.ResponseWriter, r *http.Re
 	})
 }
 
-func (a *HandlerAccess) Solar(w http.ResponseWriter, r *http.Request) {
 func (a *HandlerAccess) Solar(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "solar-analysis.page.tmpl", &models.TemplateData{})
 }
