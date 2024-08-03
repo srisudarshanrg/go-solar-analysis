@@ -18,9 +18,10 @@ func routes() http.Handler {
 	mux.Get("/resource-production", handlers.Repository.ResourceProduction)
 	mux.Post("/resource-production", handlers.Repository.PostResourceProduction)
 
-	mux.Get("/solar-analysis", handlers.Repository.SolarAnalysis)
+	mux.Get("/solar", handlers.Repository.Solar)
+	mux.Post("/solar", handlers.Repository.PostSolar)
 
-	mux.Get("/wind-analysis", handlers.Repository.WindAnalysis)
+	mux.Get("/wind-analysis", handlers.Repository.Wind)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
