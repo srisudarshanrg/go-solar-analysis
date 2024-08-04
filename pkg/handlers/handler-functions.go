@@ -22,26 +22,47 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	requiredLandAreaRecieved := r.Form.Get("land_area")
+	requiredPowerRecieved := r.Form.Get("power")
+	electricityBillRecieved := r.Form.Get("billCurrent")
+
+	electricityBill, err := strconv.Atoi(electricityBillRecieved)
+	if err != nil {
+		log.Println(err)
+	}
+
+	var requiredPowerRecievedFloat float64
+
+	requiredPowerRecievedFloat, err = strconv.ParseFloat(requiredPowerRecieved, 64)
 	requiredLandArea, err = strconv.Atoi(requiredLandAreaRecieved)
 
 	if err != nil && strings.Contains(err.Error(), "invalid syntax") {
 		errorMap := map[string]string{}
-		errorMap["integerValue"] = "You have to enter a positive value"
+		errorMap["invalidFormat"] = "Enter details in format specified"
 		render.RenderTemplate(w, r, "solar-analysis.page.tmpl", &models.TemplateData{
 			Errors: errorMap,
 		})
 	}
 
-	getPlanQuery := `select * from solar where land_area_minimum <= $1`
-	rows, err := db.Query(getPlanQuery, requiredLandArea)
+	getPlanQuery := `select * from solar where land_area_minimum <= $1 and power >= $2`
+	result, _ := db.Exec(getPlanQuery, requiredLandArea, requiredPowerRecievedFloat)
+	affected, _ := result.RowsAffected()
+
+	if affected == 0 {
+		errorMap := map[string]string{}
+		errorMap["invalidFormat"] = "No such plan is available. Perhaps you would like to check the available plans first?"
+		render.RenderTemplate(w, r, "solar-analysis.page.tmpl", &models.TemplateData{
+			Errors: errorMap,
+		})
+	}
+
+	rows, err := db.Query(getPlanQuery, requiredLandArea, requiredPowerRecievedFloat)
 	if err != nil {
 		log.Println(err)
 	}
 
-	var plan, power, modules, batteries, accessories, electricity, company, link string
+	var plan, modules, batteries, accessories, electricity, company, link, cost string
+	var power float64
 	var id, land_area_minimum, land_area_maximum int
-	var cost float64
-
 	html := `
 	<html>
 	<body style="background-color: rgb(26, 26, 26); color: #fff;">
@@ -51,7 +72,7 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 		<a href="/solar" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i></a>
 		<br>
 		<br>
-		<a href="" class="btn btn-primary">Calculate Profit</a>
+		<a href="/solar-profit" class="btn btn-primary">Calculate Profit</a>
 		<br>
 		<br>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -70,44 +91,143 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 
 		land_area_minimum := strconv.Itoa(land_area_minimum)
 		land_area_maximum := strconv.Itoa(land_area_maximum)
-		cost := strconv.FormatFloat(cost, 'f', 1, 64)
+
+		costNew, err := strconv.Atoi(cost)
+		if err != nil {
+			log.Println(err)
+		}
+
+		var time int
+
+		for i := 1; electricityBill <= costNew; i++ {
+			if electricityBill*i >= costNew {
+				time = i
+				break
+			} else {
+				continue
+			}
+		}
 
 		newHtml := `
 		<html>
 			<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-			<div class="card text-bg-dark" style="width: 18rem;">
-				<div class="card-header" style="font-size: 1.5rem;">
-					%s
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<div class="card text-bg-dark" style="width: 18rem;">
+						<div class="card-header" style="font-size: 1.5rem;">
+							%s
+						</div>
+						<div class="card-body">
+							<li class="list-group-item">Company: %s</li>
+							<hr>
+							<li class="list-group-item">Minimum Area(sqft): %s sqft</li>
+							<hr>
+							<li class="list-group-item">Maxmimum Area(sqft): %s sqft</li>
+							<hr>
+							<li class="list-group-item">Power: %f kVA PCU</li>
+							<hr>
+							<li class="list-group-item">Modules: %s</li>
+							<hr>
+							<li class="list-group-item">Batteries: %s</li>
+							<hr>
+							<li class="list-group-item">Accessories: %s</li>
+							<hr>
+							<li class="list-group-item">Setup Cost: %d rupees</li>
+							<hr>
+							<li class="list-group-item">Annual Electricity Generated: %s</li>
+							<hr>
+							<li class="list-group-item"><a href="%s">Visit Site</a></li>
+							<hr>
+						</div>
+					</div>
 				</div>
-				<div class="card-body">
-					<li class="list-group-item">Company: %s</li>
-					<hr>
-					<li class="list-group-item">Minimum Area(sqft): %s</li>
-					<hr>
-					<li class="list-group-item">Maxmimum Area(sqft): %s</li>
-					<hr>
-					<li class="list-group-item">Power: %s</li>
-					<hr>
-					<li class="list-group-item">Modules: %s</li>
-					<hr>
-					<li class="list-group-item">Batteries: %s</li>
-					<hr>
-					<li class="list-group-item">Accessories: %s</li>
-					<hr>
-					<li class="list-group-item">Setup Cost: %s Lakhs</li>
-					<hr>
-					<li class="list-group-item">Annual Electricity Generated: %s</li>
-					<hr>
-					<li class="list-group-item"><a href="%s">Visit Site</a></li>
-					<hr>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<div class="card text-bg-dark" style="width: 18rem;">
+						<div class="card-header" style="font-size: 1.5rem;">
+							Profit Calculator
+						</div>
+						<div class="card-body">
+							<li class="list-group-item">Your existing electricity bill (annual): %d rupees</li>
+							<hr>
+							<li class="list-group-item">Setup cost: %d rupees</li>
+							<hr>
+							<li class="list-group-item">Break Even: %d Years</li>
+						</div>
+					</div>
 				</div>
 			</div>
+			
 			<br>
 			<br>
 			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 		</html>
 		`
 
-		fmt.Fprintf(w, newHtml, plan, company, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, cost, electricity, link)
+		fmt.Fprintf(w, newHtml, plan, company, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, costNew, electricity, link, electricityBill, costNew, time)
 	}
+}
+
+func PostSolarProfitFunction(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	plan := r.Form.Get("plan")
+	currentCostRecieved := r.Form.Get("existingCost")
+	currentCost, err := strconv.Atoi(currentCostRecieved)
+	if err != nil {
+		log.Println(err)
+	}
+
+	getCostQuery := `select cost from solar where plan=$1`
+	row, err := db.Query(getCostQuery, plan)
+	if err != nil {
+		log.Println(err)
+	}
+
+	var solarCostRecieved string
+
+	for row.Next() {
+		err = row.Scan(&solarCostRecieved)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	solarCost, err := strconv.Atoi(solarCostRecieved)
+	if err != nil {
+		log.Println(err)
+	}
+
+	var time int
+
+	annualElectricity := currentCost * 12
+	for i := 1; annualElectricity <= solarCost; i++ {
+		if annualElectricity*i >= solarCost {
+			time = i
+			break
+		} else {
+			continue
+		}
+	}
+
+	type Details struct {
+		CurrentCost int
+		SolarCost   int
+		ProfitTime  int
+	}
+
+	profitDetails := Details{
+		CurrentCost: annualElectricity,
+		SolarCost:   solarCost,
+		ProfitTime:  time,
+	}
+
+	data := map[string]interface{}{}
+	data["profitDetails"] = profitDetails
+
+	render.RenderTemplate(w, r, "solar-profit-result.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }

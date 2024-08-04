@@ -221,11 +221,11 @@ func (a *HandlerAccess) SolarProfit(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *HandlerAccess) PostSolarProfit(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		log.Println(err)
-	}
+	PostSolarProfitFunction(w, r)
+}
 
+func (a *HandlerAccess) SolarProfitResult(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, r, "solar-profit-result.page.tmpl", &models.TemplateData{})
 }
 
 func (a *HandlerAccess) Wind(w http.ResponseWriter, r *http.Request) {

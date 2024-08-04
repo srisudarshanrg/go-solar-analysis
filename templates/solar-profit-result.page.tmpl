@@ -11,6 +11,7 @@
     
     </head>
     <body>
+        {{$profitDetails := index .Data "profitDetails"}}
         <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#" style="margin-left: 15px;"><span style="color: green;"><i class="fa-brands fa-pagelines"></i></span> EcoInstall</a>
@@ -55,33 +56,19 @@
         <br>
         <br>
 
-        <form method="post">
-            <h2>Solar Setup Profit Calculator</h2>
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    <label for="plan">Choose a Plan</label>
-                    <br>
-                    <br>
-                    <input list="plans" class="form-control" placeholder="Choose plan from dropdown" name="plan">
-                    <datalist id="plans">
-                        <option value="Solution A (Tata Solar)"></option>
-                        <option value="Solution B (Tata Solar)"></option>
-                        <option value="Solution C (Tata Solar)"></option>
-                        <option value="Solution D (Tata Solar)"></option>
-                    </datalist>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    <label for="existingCost">Current Monthly Electricity Bill</label>
-                    <br>
-                    <br>
-                    <input type="text" name="existingCost" id="" class="form-control" placeholder="Enter existing electricity bill (per month)">
-                </div>
+        <div class="details text-center">
+            <div class="detail-div">
+                <h2><span class="labels">Your Annual Electricity Bill</span><br><span class="label-values">{{$profitDetails.CurrentCost}} rupees</span></h2>
             </div>
-
             <br>
-            
-            <button class="btn btn-primary">Submit</button>
-        </form>
+            <div class="detail-div">
+                <h2><span class="labels">Cost of Setting Up Solar panel For Chosen Plan</span><br><span class="label-values">{{$profitDetails.SolarCost}} rupees</span></h2>
+            </div>
+            <br>
+            <h2 class="detail-div"><span class="labels">Break Even</span><br><span class="label-values">{{$profitDetails.ProfitTime}} Years</span></h2>
+            <br>
+            <a href="solar-profit" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        </div>       
 
         <br>
         <br>
