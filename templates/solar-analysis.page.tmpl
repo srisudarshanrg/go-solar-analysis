@@ -61,9 +61,10 @@
             <input type="text" placeholder="Land area (in square feet)" name="land_area" class="form-control">
             <br>
             <button class="btn btn-primary">Submit</button>
+            <a class="btn btn-primary" href="/solar-profit">Profit Calculator</a>
             {{if index .Errors "integerValue"}}
                 <br>
-                <label class="text-danger">{{index .Errors "integerValue"}}</label>
+                <label class="text-danger" style="font-size: 1rem;">{{index .Errors "integerValue"}}</label>
                 <br>
             {{end}}
         </form>
