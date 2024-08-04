@@ -40,6 +40,7 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 
 	var plan, power, modules, batteries, accessories, electricity, company, link string
 	var id, land_area_minimum, land_area_maximum int
+	var cost float64
 
 	html := `
 	<html>
@@ -62,13 +63,14 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "text/html")
 
 	for rows.Next() {
-		err = rows.Scan(&id, &plan, &land_area_minimum, &land_area_maximum, &power, &modules, &batteries, &accessories, &electricity, &company, &link)
+		err = rows.Scan(&id, &plan, &land_area_minimum, &land_area_maximum, &power, &modules, &batteries, &accessories, &electricity, &company, &link, &cost)
 		if err != nil {
 			log.Println(err)
 		}
 
 		land_area_minimum := strconv.Itoa(land_area_minimum)
 		land_area_maximum := strconv.Itoa(land_area_maximum)
+		cost := strconv.FormatFloat(cost, 'f', 1, 64)
 
 		newHtml := `
 		<html>
@@ -92,6 +94,8 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 					<hr>
 					<li class="list-group-item">Accessories: %s</li>
 					<hr>
+					<li class="list-group-item">Setup Cost: %s Lakhs</li>
+					<hr>
 					<li class="list-group-item">Annual Electricity Generated: %s</li>
 					<hr>
 					<li class="list-group-item"><a href="%s">Visit Site</a></li>
@@ -104,7 +108,6 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 		</html>
 		`
 
-		fmt.Fprintf(w, newHtml, plan, company, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, electricity, link)
-
+		fmt.Fprintf(w, newHtml, plan, company, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, cost, electricity, link)
 	}
 }

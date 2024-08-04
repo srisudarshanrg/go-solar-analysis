@@ -56,17 +56,30 @@
         <br>
 
         <form method="post">
-            <label for="plan">Choose a Plan</label>
+            <h2>Solar Setup Profit Calculator</h2>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <label for="plan">Choose a Plan</label>
+                    <br>
+                    <br>
+                    <input list="plans" class="form-control" placeholder="Choose plan from dropdown">
+                    <datalist id="plans">
+                        <option value="Solution A (Tata Solar)"></option>
+                        <option value="Solution B (Tata Solar)"></option>
+                        <option value="Solution C (Tata Solar)"></option>
+                        <option value="Solution D (Tata Solar)"></option>
+                    </datalist>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <label for="existingCost">Current Monthly Electricity Bill</label>
+                    <br>
+                    <br>
+                    <input type="text" name="existingCost" id="" class="form-control" placeholder="Enter existing electricity bill (per month)">
+                </div>
+            </div>
+
             <br>
-            <br>
-            <input list="plans" class="form-control" placeholder="Choose plan from dropdown">
-            <datalist id="plans">
-                <option value="Solution A (Tata Solar)"></option>
-                <option value="Solution B (Tata Solar)"></option>
-                <option value="Solution C (Tata Solar)"></option>
-                <option value="Solution D (Tata Solar)"></option>
-            </datalist>
-            <br>
+            
             <button class="btn btn-primary">Submit</button>
         </form>
 
