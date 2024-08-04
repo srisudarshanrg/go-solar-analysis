@@ -215,6 +215,11 @@ func (a *HandlerAccess) PostSolar(w http.ResponseWriter, r *http.Request) {
 	PostSolarFunction(w, r)
 }
 
+// SolarProfit is the handler for the solar profit page
+func (a *HandlerAccess) SolarProfit(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, r, "solar-profit.page.tmpl", &models.TemplateData{})
+}
+
 func (a *HandlerAccess) Wind(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "wind-analysis.page.tmpl", &models.TemplateData{})
 }

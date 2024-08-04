@@ -21,6 +21,8 @@ func routes() http.Handler {
 	mux.Get("/solar", handlers.Repository.Solar)
 	mux.Post("/solar", handlers.Repository.PostSolar)
 
+	mux.Get("/solar-profit", handlers.Repository.SolarProfit)
+
 	mux.Get("/wind", handlers.Repository.Wind)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
