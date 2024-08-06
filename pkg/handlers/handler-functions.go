@@ -60,6 +60,8 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	defer rows.Close()
+
 	var plan, modules, batteries, accessories, electricity, company, link, cost string
 	var power float64
 	var id, land_area_minimum, land_area_maximum int
@@ -181,15 +183,17 @@ func PostSolarProfitFunction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	getCostQuery := `select cost from solar where plan=$1`
-	row, err := db.Query(getCostQuery, plan)
+	rows, err := db.Query(getCostQuery, plan)
 	if err != nil {
 		log.Println(err)
 	}
 
+	defer rows.Close()
+
 	var solarCostRecieved string
 
-	for row.Next() {
-		err = row.Scan(&solarCostRecieved)
+	for rows.Next() {
+		err = rows.Scan(&solarCostRecieved)
 		if err != nil {
 			log.Println(err)
 		}
