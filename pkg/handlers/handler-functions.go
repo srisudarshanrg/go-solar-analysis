@@ -146,7 +146,7 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 					<div class="card text-bg-dark" style="width: 18rem;">
 						<div class="card-header" style="font-size: 1.5rem;">
-							Profit Calculator
+							%s Profit Calculator
 						</div>
 						<div class="card-body">
 							<li class="list-group-item">Your existing electricity bill (annual): %d rupees</li>
@@ -165,7 +165,7 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 		</html>
 		`
 
-		fmt.Fprintf(w, newHtml, plan, company, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, costNew, electricity, link, electricityBill, costNew, time)
+		fmt.Fprintf(w, newHtml, plan, company, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, costNew, electricity, link, plan, electricityBill, costNew, time)
 	}
 }
 
