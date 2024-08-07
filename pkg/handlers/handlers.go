@@ -78,7 +78,7 @@ func (a *HandlerAccess) PostResourceConsumption(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	var country, oil, electricity, coal, natural_gas, biofuel string
+	var country, oil, electricity, coal, natural_gas, biofuel interface{}
 	var id int
 	var created, updated interface{}
 
@@ -98,12 +98,12 @@ func (a *HandlerAccess) PostResourceConsumption(w http.ResponseWriter, r *http.R
 	}
 
 	type ConsumptionDetails struct {
-		Country     string
-		Oil         string
-		Electricity string
-		Coal        string
-		NaturalGas  string
-		Biofuel     string
+		Country     interface{}
+		Oil         interface{}
+		Electricity interface{}
+		Coal        interface{}
+		NaturalGas  interface{}
+		Biofuel     interface{}
 	}
 
 	countryConsumption := ConsumptionDetails{
@@ -167,7 +167,7 @@ func (a *HandlerAccess) PostResourceProduction(w http.ResponseWriter, r *http.Re
 
 	defer rows.Close()
 
-	var country, code, year, gas_production, coal_production, oil_production string
+	var country, code, year, gas_production, coal_production, oil_production interface{}
 	var id int
 	var created, updated interface{}
 
@@ -180,12 +180,12 @@ func (a *HandlerAccess) PostResourceProduction(w http.ResponseWriter, r *http.Re
 	}
 
 	type ProductionDetails struct {
-		Country        string
-		Code           string
-		Year           string
-		GasProduction  string
-		CoalProduction string
-		OilProduction  string
+		Country        interface{}
+		Code           interface{}
+		Year           interface{}
+		GasProduction  interface{}
+		CoalProduction interface{}
+		OilProduction  interface{}
 	}
 
 	countryProduction := ProductionDetails{
