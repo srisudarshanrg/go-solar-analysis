@@ -57,6 +57,21 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			log.Println(err)
 			return nil, err
 		}
+
+		layouts, err := filepath.Glob("./templates/*.layout.tmpl")
+		if err != nil {
+			log.Println("Error while getting layout files")
+			return templateCache, err
+		}
+
+		if len(layouts) > 0 {
+			templateSet, err = templateSet.ParseGlob("./templates/*.layout.tmpl")
+			if err != nil {
+				log.Println(err)
+				return templateCache, err
+			}
+		}
+
 		templateCache[filepath.Base(file)] = templateSet
 	}
 
