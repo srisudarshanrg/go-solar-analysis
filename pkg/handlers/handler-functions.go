@@ -33,7 +33,7 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 
 	var requiredPowerRecievedFloat float64
 
-	requiredPowerRecievedFloat, err = strconv.ParseFloat(requiredPowerRecieved, 64)
+	requiredPowerRecievedFloat, _ = strconv.ParseFloat(requiredPowerRecieved, 64)
 	requiredLandArea, err = strconv.Atoi(requiredLandAreaRecieved)
 
 	if err != nil && strings.Contains(err.Error(), "invalid syntax") {
