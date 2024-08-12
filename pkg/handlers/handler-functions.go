@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/smtp"
 	"strconv"
 	"strings"
 
@@ -234,4 +235,22 @@ func PostSolarProfitFunction(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "solar-profit-result.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
+}
+
+// SendEmail sends an email to the given email
+func SendEmail(from string, to []string, message []byte, password string) error {
+	// smtp server configurations
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	// Authentication
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
