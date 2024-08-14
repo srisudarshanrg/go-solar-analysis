@@ -63,7 +63,7 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 
 	defer rows.Close()
 
-	var plan, modules, batteries, accessories, electricity, company, link, cost string
+	var plan, modules, batteries, accessories, electricity, company, link, cost, typePlan string
 	var power float64
 	var id, land_area_minimum, land_area_maximum int
 	html := `
@@ -87,7 +87,7 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "text/html")
 
 	for rows.Next() {
-		err = rows.Scan(&id, &plan, &land_area_minimum, &land_area_maximum, &power, &modules, &batteries, &accessories, &electricity, &company, &link, &cost)
+		err = rows.Scan(&id, &plan, &land_area_minimum, &land_area_maximum, &power, &modules, &batteries, &accessories, &electricity, &company, &link, &cost, &typePlan)
 		if err != nil {
 			log.Println(err)
 		}
@@ -122,6 +122,8 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 						</div>
 						<div class="card-body">
 							<li class="list-group-item">Company: %s</li>
+							<hr>
+							<li class="list-group-item">Type: %s</li>
 							<hr>
 							<li class="list-group-item">Minimum Area(sqft): %s sqft</li>
 							<hr>
@@ -166,7 +168,7 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 		</html>
 		`
 
-		fmt.Fprintf(w, newHtml, plan, company, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, costNew, electricity, link, plan, electricityBill, costNew, time)
+		fmt.Fprintf(w, newHtml, plan, company, typePlan, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, costNew, electricity, link, plan, electricityBill, costNew, time)
 	}
 }
 

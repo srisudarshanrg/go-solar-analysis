@@ -26,8 +26,6 @@ func routes() http.Handler {
 
 	mux.Get("/solar-profit-result", handlers.Repository.SolarProfitResult)
 
-	mux.Get("/wind", handlers.Repository.Wind)
-
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 

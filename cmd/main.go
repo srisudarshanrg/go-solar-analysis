@@ -14,7 +14,7 @@ import (
 var app config.AppConfig
 var db *sql.DB
 
-const portNumber = ":4040"
+const portNumber = ":4000"
 
 func main() {
 	app.UseCache = false
