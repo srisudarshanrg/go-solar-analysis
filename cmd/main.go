@@ -17,6 +17,7 @@ var db *sql.DB
 const portNumber = ":4000"
 
 func main() {
+	var err error
 	app.UseCache = false
 
 	templateCache, err := render.CreateTemplateCache()
@@ -32,7 +33,7 @@ func main() {
 	render.SetAppConfig(&app)
 
 	// create database connection
-	db, err := database.CreateDatabaseConnection()
+	db, err = database.CreateDatabaseConnection()
 	if err != nil {
 		log.Println(err)
 	}
