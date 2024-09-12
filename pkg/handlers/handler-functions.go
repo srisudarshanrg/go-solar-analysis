@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"net/smtp"
@@ -66,30 +65,25 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 	var plan, modules, batteries, accessories, electricity, company, link, cost, typePlan string
 	var power float64
 	var id, land_area_minimum, land_area_maximum int
-	html := `
-	<html>
-	<body style="background-color: rgb(26, 26, 26); color: #fff;">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-		<h1>Available Plans</h1>
-		<br>
-		<a href="/solar" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i></a>
-		<br>
-		<br>
-		<a href="/solar-profit" class="btn btn-primary">Calculate Profit</a>
-		<br>
-		<br>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-		<script src="https://kit.fontawesome.com/2ce79bf423.js" crossorigin="anonymous"></script>
-	</body>
-	</html>
-	`
-	fmt.Fprint(w, html)
-	w.Header().Add("Content-Type", "text/html")
 
-	var plan_list, modules_list, batteries_list, accessories_list, electricity_list, company_list, link_list, plan_type_list []string
-	var land_area_minimum_list, land_area_maximum_list []string
-	var cost_list []int
-	var power_list []float64
+	type Plan struct {
+		PlanName        string
+		Company         string
+		PlanType        string
+		LandAreaMin     string
+		LandAreaMax     string
+		Power           float64
+		Modules         string
+		Batteries       string
+		Accessories     string
+		Cost            int
+		Electricity     string
+		Link            string
+		Time            int
+		ElectricityBill int
+	}
+
+	var completePlanList []Plan
 
 	for rows.Next() {
 		err = rows.Scan(&id, &plan, &land_area_minimum, &land_area_maximum, &power, &modules, &batteries, &accessories, &electricity, &company, &link, &cost, &typePlan)
@@ -116,116 +110,24 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		newHtml := `
-		<html>
-			<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<div class="card text-bg-dark" style="width: 18rem;">
-						<div class="card-header" style="font-size: 1.5rem;">
-							%s
-						</div>
-						<div class="card-body">
-							<li class="list-group-item">Company: %s</li>
-							<hr>
-							<li class="list-group-item">Type: %s</li>
-							<hr>
-							<li class="list-group-item">Minimum Area(sqft): %s sqft</li>
-							<hr>
-							<li class="list-group-item">Maxmimum Area(sqft): %s sqft</li>
-							<hr>
-							<li class="list-group-item">Power: %f kVA PCU</li>
-							<hr>
-							<li class="list-group-item">Modules: %s</li>
-							<hr>
-							<li class="list-group-item">Batteries: %s</li>
-							<hr>
-							<li class="list-group-item">Accessories: %s</li>
-							<hr>
-							<li class="list-group-item">Setup Cost: %d rupees</li>
-							<hr>
-							<li class="list-group-item">Annual Electricity Generated: %s</li>
-							<hr>
-							<li class="list-group-item"><a href="%s">Visit Site</a></li>
-							<hr>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<div class="card text-bg-dark" style="width: 18rem;">
-						<div class="card-header" style="font-size: 1.5rem;">
-							%s Profit Calculator
-						</div>
-						<div class="card-body">
-							<li class="list-group-item">Your existing electricity bill (annual): %d rupees</li>
-							<hr>
-							<li class="list-group-item">Setup cost: %d rupees</li>
-							<hr>
-							<li class="list-group-item">Break Even: %d Years</li>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<br>
-			<br>
-			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-		</html>
-		`
-
-		fmt.Fprintf(w, newHtml, plan, company, typePlan, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, costNew, electricity, link, plan, electricityBill, costNew, time)
-
-		plan_list = append(plan_list, plan)
-		company_list = append(company_list, company)
-		plan_type_list = append(plan_type_list, typePlan)
-		land_area_minimum_list = append(land_area_minimum_list, land_area_minimum)
-		land_area_maximum_list = append(land_area_maximum_list, land_area_maximum)
-		power_list = append(power_list, power)
-		modules_list = append(modules_list, modules)
-		batteries_list = append(batteries_list, batteries)
-		accessories_list = append(accessories_list, accessories)
-		cost_list = append(cost_list, costNew)
-		electricity_list = append(electricity_list, electricity)
-		link_list = append(link_list, link)
-	}
-
-	type Plan struct {
-		PlanName    string
-		Company     string
-		PlanType    string
-		LandAreaMin string
-		LandAreaMax string
-		Power       float64
-		Modules     string
-		Batteries   string
-		Accessories string
-		Cost        int
-		Electricty  string
-		Link        string
-	}
-
-	var completePlanList []Plan
-
-	for n := range plan_list {
-		log.Println(n)
 		structure := Plan{
-			PlanName:    plan_list[n],
-			Company:     company_list[n],
-			PlanType:    plan_type_list[n],
-			LandAreaMin: land_area_minimum_list[n],
-			LandAreaMax: land_area_maximum_list[n],
-			Power:       power_list[n],
-			Modules:     modules_list[n],
-			Batteries:   batteries_list[n],
-			Accessories: accessories_list[n],
-			Cost:        cost_list[n],
-			Electricty:  electricity_list[n],
-			Link:        link_list[n],
+			PlanName:        plan,
+			Company:         company,
+			PlanType:        typePlan,
+			LandAreaMin:     land_area_minimum,
+			LandAreaMax:     land_area_maximum,
+			Power:           power,
+			Modules:         modules,
+			Batteries:       batteries,
+			Accessories:     accessories,
+			Cost:            costNew,
+			Electricity:     electricity,
+			Link:            link,
+			Time:            time,
+			ElectricityBill: electricityBill,
 		}
 
 		completePlanList = append(completePlanList, structure)
-
-		n += 1
 	}
 
 	data := map[string]interface{}{}

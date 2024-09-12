@@ -1,20 +1,43 @@
-{{template "standard"}}
+{{template "standard" .}}
 
 {{define "title"}} Suitable Plans {{end}}
 
-{{define "css"}} <link rel="stylesheet" href=""> {{end}}
+{{define "css"}} <link rel="stylesheet" href="../static/css/solar-result.css"> {{end}}
 
 {{define "content"}}
-    <h1>Solar Setup Plans That Suit Your Requirements</h1>
-
-    {{$plans := index .Data "solarPlans"}}
-    <p>{{$plans}}</p>
+    <h1 class="text-center">Solar Setup Plans That Suit Your Requirements</h1>
     
-    {{range $plans}}
-        <div class="card">
-            <div class="card-header">
-                {{$plans.PlanName}}
+    {{$plans := index .Data "solarPlans"}}
+    
+    <div class="card-container">
+        {{range $plan := $plans}}
+            <div class="card text-bg-dark">
+                <div class="card-header" style="border-bottom: 1px solid #fff;">
+                    {{$plan.PlanName}}
+                </div>
+                <div class="card-body" style="border-bottom: 1px solid #fff;">
+                    <h3><b>Details</b></h3>
+                    <br>
+                    <p><b>Company:</b> {{$plan.Company}}</p>
+                    <p><b>Plan Type:</b> {{$plan.PlanType}}</p>
+                    <p><b>Minimum land area required:</b> {{$plan.LandAreaMin}} sq.ft</p>
+                    <p><b>Maximum land area required:</b> {{$plan.LandAreaMax}} sq.ft</p>
+                    <p><b>Power generated:</b> {{$plan.Power}} kVA</p>
+                    <p><b>Modules</b> {{$plan.Modules}}</p>
+                    <p><b>Batteries:</b> {{$plan.Batteries}}</p>
+                    <p><b>Accessories required:</b> {{$plan.Accessories}}</p>
+                    <p><b>Cost of setup:</b> <i class="fa-solid fa-indian-rupee-sign"></i>{{$plan.Cost}}</p>
+                    <p><b>Annual electricity generated:</b> {{$plan.Electricity}}</p>
+                    <p><b>Link:</b> {{$plan.Link}}</p>
+                </div>
+                <div class="card-footer">
+                    <h4>Profit Calculator</h4>
+                    <p><b>Current Electricity Bill:</b> <i class="fa-solid fa-indian-rupee-sign"></i>{{$plan.ElectricityBill}}</p>
+                    <p><b>Cost of Setup:</b> <i class="fa-solid fa-indian-rupee-sign"></i>{{$plan.Cost}}</p>
+                    <p class="bg-success" style="padding: 5px; border-radius:5px;"><b style="padding-left: 5px;">Break Even:</b> {{$plan.Time}} Years</p>
+                </div>
             </div>
-        </div>
-    {{end}}
+        {{end}}
+    </div>
+    
 {{end}}
