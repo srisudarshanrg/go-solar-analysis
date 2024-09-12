@@ -5,8 +5,8 @@
 {{define "css"}} <link rel="stylesheet" href="../static/css/solar-result.css"> {{end}}
 
 {{define "content"}}
-    <h1 class="text-center">Solar Setup Plans That Suit Your Requirements</h1>
-    
+    <h1 class="text-center"><a href="/solar" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a> Solar Setup Plans That Suit Your Requirements</h1>
+    <a href="/solar-profit" class="btn btn-primary" style="margin-right: 10%;"><i class="fa-solid fa-calculator"></i> Profit Calculator</a>
     {{$plans := index .Data "solarPlans"}}
     
     <div class="card-container">
@@ -17,7 +17,6 @@
                 </div>
                 <div class="card-body" style="border-bottom: 1px solid #fff;">
                     <h3><b>Details</b></h3>
-                    <br>
                     <p><b>Company:</b> {{$plan.Company}}</p>
                     <p><b>Plan Type:</b> {{$plan.PlanType}}</p>
                     <p><b>Minimum land area required:</b> {{$plan.LandAreaMin}} sq.ft</p>
