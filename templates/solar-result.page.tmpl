@@ -1,0 +1,20 @@
+{{template "standard"}}
+
+{{define "title"}} Suitable Plans {{end}}
+
+{{define "css"}} <link rel="stylesheet" href=""> {{end}}
+
+{{define "content"}}
+    <h1>Solar Setup Plans That Suit Your Requirements</h1>
+
+    {{$plans := index .Data "solarPlans"}}
+    <p>{{$plans}}</p>
+    
+    {{range $plans}}
+        <div class="card">
+            <div class="card-header">
+                {{$plans.PlanName}}
+            </div>
+        </div>
+    {{end}}
+{{end}}

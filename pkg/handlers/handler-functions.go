@@ -86,6 +86,11 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, html)
 	w.Header().Add("Content-Type", "text/html")
 
+	var plan_list, modules_list, batteries_list, accessories_list, electricity_list, company_list, link_list, plan_type_list []string
+	var land_area_minimum_list, land_area_maximum_list []string
+	var cost_list []int
+	var power_list []float64
+
 	for rows.Next() {
 		err = rows.Scan(&id, &plan, &land_area_minimum, &land_area_maximum, &power, &modules, &batteries, &accessories, &electricity, &company, &link, &cost, &typePlan)
 		if err != nil {
@@ -169,7 +174,68 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 		`
 
 		fmt.Fprintf(w, newHtml, plan, company, typePlan, land_area_minimum, land_area_maximum, power, modules, batteries, accessories, costNew, electricity, link, plan, electricityBill, costNew, time)
+
+		plan_list = append(plan_list, plan)
+		company_list = append(company_list, company)
+		plan_type_list = append(plan_type_list, typePlan)
+		land_area_minimum_list = append(land_area_minimum_list, land_area_minimum)
+		land_area_maximum_list = append(land_area_maximum_list, land_area_maximum)
+		power_list = append(power_list, power)
+		modules_list = append(modules_list, modules)
+		batteries_list = append(batteries_list, batteries)
+		accessories_list = append(accessories_list, accessories)
+		cost_list = append(cost_list, costNew)
+		electricity_list = append(electricity_list, electricity)
+		link_list = append(link_list, link)
 	}
+
+	type Plan struct {
+		PlanName    string
+		Company     string
+		PlanType    string
+		LandAreaMin string
+		LandAreaMax string
+		Power       float64
+		Modules     string
+		Batteries   string
+		Accessories string
+		Cost        int
+		Electricty  string
+		Link        string
+	}
+
+	var completePlanList []Plan
+
+	for n := range plan_list {
+		log.Println(n)
+		structure := Plan{
+			PlanName:    plan_list[n],
+			Company:     company_list[n],
+			PlanType:    plan_type_list[n],
+			LandAreaMin: land_area_minimum_list[n],
+			LandAreaMax: land_area_maximum_list[n],
+			Power:       power_list[n],
+			Modules:     modules_list[n],
+			Batteries:   batteries_list[n],
+			Accessories: accessories_list[n],
+			Cost:        cost_list[n],
+			Electricty:  electricity_list[n],
+			Link:        link_list[n],
+		}
+
+		completePlanList = append(completePlanList, structure)
+
+		n += 1
+	}
+
+	data := map[string]interface{}{}
+	data["solarPlans"] = completePlanList
+
+	log.Println(data["solarPlans"])
+
+	render.RenderTemplate(w, r, "solar-result.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }
 
 func PostSolarProfitFunction(w http.ResponseWriter, r *http.Request) {

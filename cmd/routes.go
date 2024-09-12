@@ -21,6 +21,8 @@ func routes() http.Handler {
 	mux.Get("/solar", handlers.Repository.Solar)
 	mux.Post("/solar", handlers.Repository.PostSolar)
 
+	mux.Get("/solar-result", handlers.Repository.SolarResult)
+
 	mux.Get("/solar-profit", handlers.Repository.SolarProfit)
 	mux.Post("/solar-profit", handlers.Repository.PostSolarProfit)
 
