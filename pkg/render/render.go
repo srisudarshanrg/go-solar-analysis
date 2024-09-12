@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/srisudarshanrg/idp-project/pkg/config"
-	"github.com/srisudarshanrg/idp-project/pkg/models"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/config"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/models"
 )
 
 var app *config.AppConfig

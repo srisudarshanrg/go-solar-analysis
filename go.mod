@@ -1,6 +1,6 @@
-module github.com/srisudarshanrg/idp-project
+module github.com/srisudarshanrg/go-solar-analysis
 
-go 1.21.6
+go 1.23
 
 require (
 	github.com/go-chi/chi v1.5.5 // indirect

@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/srisudarshanrg/idp-project/pkg/config"
-	"github.com/srisudarshanrg/idp-project/pkg/database"
-	"github.com/srisudarshanrg/idp-project/pkg/handlers"
-	"github.com/srisudarshanrg/idp-project/pkg/render"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/config"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/database"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/handlers"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/render"
 
 	"github.com/go-chi/chi"
 )

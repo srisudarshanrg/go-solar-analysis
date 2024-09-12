@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/srisudarshanrg/idp-project/pkg/config"
-	"github.com/srisudarshanrg/idp-project/pkg/models"
-	"github.com/srisudarshanrg/idp-project/pkg/render"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/config"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/models"
+	"github.com/srisudarshanrg/go-solar-analysis/pkg/render"
 )
 
 var Repository HandlerAccess
