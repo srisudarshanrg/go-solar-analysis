@@ -6,7 +6,10 @@
 
 {{define "content"}}
     <h1 class="text-center"><a href="/solar" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a> Solar Setup Plans That Suit Your Requirements</h1>
-    <a href="/solar-profit" class="btn btn-primary" style="margin-right: 10%;"><i class="fa-solid fa-calculator"></i> Profit Calculator</a>
+    <div class="text-center">
+        <a href="/solar-profit" class="btn btn-primary" style="margin-right: 10%;"><i class="fa-solid fa-calculator"></i> Profit Calculator</a>
+    </div>
+    
     {{$plans := index .Data "solarPlans"}}
     
     <div class="card-container">
@@ -27,7 +30,7 @@
                     <p><b>Accessories required:</b> {{$plan.Accessories}}</p>
                     <p><b>Cost of setup:</b> <i class="fa-solid fa-indian-rupee-sign"></i>{{$plan.Cost}}</p>
                     <p><b>Annual electricity generated:</b> {{$plan.Electricity}}</p>
-                    <p><b>Link:</b> {{$plan.Link}}</p>
+                    <p><b>Link:</b> <a href="https://www.tatapowersolar.com/rooftops/residential/">{{$plan.Link}}</a></p>
                 </div>
                 <div class="card-footer">
                     <h4>Profit Calculator</h4>
