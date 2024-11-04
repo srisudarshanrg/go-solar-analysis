@@ -177,9 +177,8 @@ func PostSolarProfitFunction(w http.ResponseWriter, r *http.Request) {
 
 	var time int
 
-	annualElectricity := currentCost * 12
-	for i := 1; annualElectricity <= solarCost; i++ {
-		if annualElectricity*i >= solarCost {
+	for i := 1; currentCost <= solarCost; i++ {
+		if currentCost*i >= solarCost {
 			time = i
 			break
 		} else {
@@ -194,7 +193,7 @@ func PostSolarProfitFunction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	profitDetails := Details{
-		CurrentCost: annualElectricity,
+		CurrentCost: currentCost,
 		SolarCost:   solarCost,
 		ProfitTime:  time,
 	}
