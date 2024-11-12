@@ -10,7 +10,7 @@
         <br>
         <label for="country" style="margin-bottom: 3%;">Enter desired country: </label>
         <br>
-        <input type="text" name="country" id="country" placeholder="Enter a country" class="form-control" style="margin-bottom: 3%;" value="{{if index .Data "countryConsumption"}} {{$consumption.Country}} {{end}}">
+        <input required type="text" name="country" id="country" placeholder="Enter a country" class="form-control" style="margin-bottom: 3%;" value="{{if index .Data "countryConsumption"}} {{$consumption.Country}} {{end}}">
         <button class="btn btn-primary">Submit</button>
         <br>
         {{if index .Errors "consumptionCountryNotFound"}}
