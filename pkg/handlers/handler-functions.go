@@ -133,8 +133,6 @@ func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{}
 	data["solarPlans"] = completePlanList
 
-	log.Println(data["solarPlans"])
-
 	render.RenderTemplate(w, r, "solar-result.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
