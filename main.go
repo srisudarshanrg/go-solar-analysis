@@ -20,7 +20,7 @@ const portNumber = ":4000"
 
 func main() {
 	var err error
-	app.UseCache = false
+	app.UseCache = true
 
 	templateCache, err := render.CreateTemplateCache()
 	if err != nil {
@@ -49,6 +49,8 @@ func main() {
 		Addr:    portNumber,
 		Handler: routes(),
 	}
+
+	log.Println("Server running on port number", portNumber)
 
 	err = srv.ListenAndServe()
 	if err != nil {
