@@ -60,4 +60,3 @@ The working of these projects is as follows:
 - go-chi
 - jackc/pgconn
 - crypto
-- 
