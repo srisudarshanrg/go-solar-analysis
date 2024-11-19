@@ -11,6 +11,159 @@ import (
 	"github.com/srisudarshanrg/go-solar-analysis/pkg/render"
 )
 
+// PostResourceConsumptionFunction is the functionality for the resource consumption feature
+func PostResourceConsumptionFunction(w http.ResponseWriter, r *http.Request) {
+	var err error
+	err = r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	countryEntered := r.Form.Get("country")
+	countryEntered = strings.ToLower(countryEntered)
+
+	// check if country exist
+	getCountryQuery := `select * from resource_consumption where lower(country)=$1`
+	result, err := db.Exec(getCountryQuery, countryEntered)
+	if err != nil {
+		log.Println(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+
+	if rowsAffected == 0 {
+		errorMap := map[string]string{}
+
+		errorMap["consumptionCountryNotFound"] = "Data not available for this country."
+
+		render.RenderTemplate(w, r, "resource-consumption.page.tmpl", &models.TemplateData{
+			Errors: errorMap,
+		})
+
+		return
+	}
+
+	var country, oil, electricity, coal, natural_gas, biofuel interface{}
+	var id int
+	var created, updated interface{}
+
+	row, err := db.Query(getCountryQuery, countryEntered)
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.Scan(&id, &country, &oil, &electricity, &coal, &natural_gas, &biofuel, &created, &updated)
+
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	type ConsumptionDetails struct {
+		Country     interface{}
+		Oil         interface{}
+		Electricity interface{}
+		Coal        interface{}
+		NaturalGas  interface{}
+		Biofuel     interface{}
+	}
+
+	countryConsumption := ConsumptionDetails{
+		Country:     country,
+		Oil:         oil,
+		Electricity: electricity,
+		Coal:        coal,
+		NaturalGas:  natural_gas,
+		Biofuel:     biofuel,
+	}
+
+	dataMap := map[string]interface{}{}
+	dataMap["countryConsumption"] = countryConsumption
+
+	render.RenderTemplate(w, r, "resource-consumption.page.tmpl", &models.TemplateData{
+		Data: dataMap,
+	})
+}
+
+func PostResourceProductionFunction(w http.ResponseWriter, r *http.Request) {
+	var err error
+	err = r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	countryEntered := r.Form.Get("country")
+	countryEntered = strings.ToLower(countryEntered)
+
+	yearEntered := r.Form.Get("year")
+
+	getCountryQuery := `select * from resource_production where lower(country)=$1 and year=$2`
+	result, err := db.Exec(getCountryQuery, countryEntered, yearEntered)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	rowNumber, _ := result.RowsAffected()
+	if rowNumber == 0 {
+		errorMap := map[string]string{}
+		errorMap["productionCountryNotFound"] = "Data not available for this country or year"
+
+		render.RenderTemplate(w, r, "resource-production.page.tmpl", &models.TemplateData{
+			Errors: errorMap,
+		})
+
+		return
+	}
+
+	rows, err := db.Query(getCountryQuery, countryEntered, yearEntered)
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer rows.Close()
+
+	var country, code, year, gas_production, coal_production, oil_production interface{}
+	var id int
+	var created, updated interface{}
+
+	for rows.Next() {
+		err = rows.Scan(&id, &country, &code, &year, &gas_production, &coal_production, &oil_production, &created, &updated)
+
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	type ProductionDetails struct {
+		Country        interface{}
+		Code           interface{}
+		Year           interface{}
+		GasProduction  interface{}
+		CoalProduction interface{}
+		OilProduction  interface{}
+	}
+
+	countryProduction := ProductionDetails{
+		Country:        country,
+		Code:           code,
+		Year:           year,
+		GasProduction:  gas_production,
+		CoalProduction: coal_production,
+		OilProduction:  oil_production,
+	}
+
+	data := map[string]interface{}{}
+	data["countryProduction"] = countryProduction
+
+	render.RenderTemplate(w, r, "resource-production.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
+}
+
 // PostSolarFunction is the functionality for the solar analysis feature
 func PostSolarFunction(w http.ResponseWriter, r *http.Request) {
 	var err error
