@@ -20,7 +20,7 @@ const portNumber = ":4000"
 
 func main() {
 	var err error
-	app.UseCache = true
+	app.UseCache = false
 
 	templateCache, err := render.CreateTemplateCache()
 	if err != nil {
